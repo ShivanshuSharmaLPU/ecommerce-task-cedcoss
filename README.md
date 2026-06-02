@@ -17,7 +17,6 @@ A full-stack MERN (MongoDB, Express, React, Node.js) authentication system with 
 - [Validation Rules](#validation-rules)
 - [How It Works](#how-it-works)
 - [Screenshots](#screenshots)
-- [For Interview Explanation](#for-interview-explanation)
 
 ## ✨ Features
 
