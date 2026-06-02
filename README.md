@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🛍️ MyStore - User Authentication System
 
 A full-stack MERN (MongoDB, Express, React, Node.js) authentication system with login and registration functionality. This project features a modern, responsive UI with robust validation and secure JWT-based authentication.
@@ -340,3 +341,6 @@ Created as a demonstration project for technical interviews.
 4. Explain the code while demonstrating
 5. Be ready to answer questions about security
 6. Know the flow diagram by heart
+=======
+# ecommerce-task-cedcoss
+>>>>>>> eb259f1f921afd9a34bc6cd9fd97b8c74723ac34
