@@ -2,213 +2,279 @@ import React from 'react';
 import { logout } from '../services/authService';
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap');
-
   .welcome-root {
     min-height: 100vh;
-    background: #0b0c10;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'DM Sans', sans-serif;
+    padding: 24px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  .welcome-card {
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+    animation: floatIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes floatIn {
+    from { opacity: 0; transform: translateY(32px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+  }
+
+  .card-glow {
+    position: absolute;
+    inset: -1px;
+    border-radius: 28px;
+    background: linear-gradient(135deg,
+      rgba(0,212,180,0.65) 0%,
+      rgba(99,57,255,0.55) 50%,
+      rgba(255,64,140,0.5) 100%
+    );
+    padding: 1px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .card-inner {
+    background: #0a0c1e;
+    border-radius: 28px;
+    padding: 52px 48px 48px;
     position: relative;
     overflow: hidden;
-  }
-
-  .welcome-root::before {
-    content: '';
-    position: absolute;
-    width: 700px;
-    height: 700px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(180,145,80,0.07) 0%, transparent 70%);
-    top: -150px;
-    right: -150px;
-    pointer-events: none;
-  }
-
-  .welcome-root::after {
-    content: '';
-    position: absolute;
-    width: 500px;
-    height: 500px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(180,145,80,0.05) 0%, transparent 70%);
-    bottom: -100px;
-    left: -100px;
-    pointer-events: none;
-  }
-
-  .welcome-container {
-    width: 480px;
-    background: #13141a;
-    border: 1px solid rgba(180,145,80,0.2);
-    border-radius: 2px;
-    padding: 56px 52px;
-    position: relative;
-    box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03);
-    animation: cardFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.06),
+      0 40px 80px rgba(0,0,0,0.65),
+      0 0 100px rgba(0,212,180,0.1),
+      inset 0 1px 0 rgba(255,255,255,0.08);
     text-align: center;
   }
 
-  @keyframes cardFadeIn {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .welcome-container::before {
+  .card-inner::before {
     content: '';
     position: absolute;
-    top: 0; left: 52px; right: 52px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(180,145,80,0.6), transparent);
-  }
-
-  .store-brand {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.4rem;
-    font-weight: 300;
-    letter-spacing: 0.35em;
-    color: #b49150;
-    text-transform: uppercase;
-    margin: 0 0 40px;
-  }
-
-  .welcome-icon {
-    width: 72px;
-    height: 72px;
-    margin: 0 auto 24px;
-    background: rgba(180,145,80,0.08);
-    border: 1px solid rgba(180,145,80,0.25);
+    top: -120px; right: -80px;
+    width: 320px; height: 320px;
     border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,212,180,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .card-inner::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: -60px;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(99,57,255,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .brand-name {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #34d9c3, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 36px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .avatar-ring {
+    position: relative;
+    width: 88px;
+    height: 88px;
+    margin: 0 auto 24px;
+    z-index: 1;
+  }
+
+  .avatar-ring::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00d4b4, #6339ff, #ff408c);
+    animation: spin 4s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .avatar-inner {
+    position: relative;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: rgba(10,12,30,0.9);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.8rem;
-    animation: iconPop 0.5s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  @keyframes iconPop {
-    from { opacity: 0; transform: scale(0.6); }
-    to { opacity: 1; transform: scale(1); }
+    font-size: 2.2rem;
+    z-index: 1;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
   }
 
   .welcome-title {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-size: 1.9rem;
-    font-weight: 400;
-    color: #e8e0d0;
-    margin: 0 0 10px;
-    letter-spacing: 0.02em;
+    font-weight: 700;
+    color: #f0ecff;
+    margin: 0 0 8px;
+    position: relative;
+    z-index: 1;
   }
 
-  .welcome-message {
-    font-size: 0.85rem;
+  .welcome-sub {
+    font-size: 0.88rem;
     color: rgba(255,255,255,0.4);
-    margin: 0 0 40px;
-    font-weight: 300;
-    letter-spacing: 0.03em;
+    font-weight: 400;
+    margin-bottom: 36px;
+    position: relative;
+    z-index: 1;
   }
 
-  .divider {
+  .section-label {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 28px;
+    gap: 10px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
   }
 
-  .divider span {
+  .section-label::before,
+  .section-label::after {
+    content: '';
     flex: 1;
     height: 1px;
-    background: rgba(255,255,255,0.08);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
   }
 
-  .divider em {
-    font-style: normal;
-    font-size: 0.62rem;
-    letter-spacing: 0.2em;
-    color: rgba(255,255,255,0.2);
+  .section-label span {
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    white-space: nowrap;
   }
 
-  .user-info {
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 2px;
-    padding: 24px 28px;
-    margin-bottom: 36px;
+  .profile-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 4px 0;
+    margin-bottom: 28px;
     text-align: left;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
   }
 
-  .user-detail {
+  .profile-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,180,0.3), transparent);
+  }
+
+  .profile-row {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    justify-content: space-between;
+    padding: 14px 20px;
     border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: background 0.2s;
   }
 
-  .user-detail:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
+  .profile-row:last-child { border-bottom: none; }
+  .profile-row:hover { background: rgba(255,255,255,0.025); }
 
-  .user-detail:first-child {
-    padding-top: 0;
-  }
-
-  .user-detail .detail-label {
-    font-size: 0.67rem;
-    letter-spacing: 0.15em;
+  .row-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: rgba(255,255,255,0.3);
-    font-weight: 400;
   }
 
-  .user-detail .detail-value {
-    font-size: 0.85rem;
-    color: #c8bfa8;
-    font-weight: 300;
-    max-width: 220px;
+  .row-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .row-dot.teal   { background: #00d4b4; box-shadow: 0 0 6px rgba(0,212,180,0.6); }
+  .row-dot.purple { background: #a78bfa; box-shadow: 0 0 6px rgba(167,139,250,0.6); }
+  .row-dot.pink   { background: #f472b6; box-shadow: 0 0 6px rgba(244,114,182,0.6); }
+
+  .row-value {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.75);
+    font-weight: 400;
+    max-width: 240px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    text-align: right;
   }
 
-  .detail-value.id-value {
-    font-family: 'DM Sans', monospace;
+  .row-value.mono {
+    font-family: 'Courier New', monospace;
     font-size: 0.75rem;
-    color: rgba(180,145,80,0.7);
+    color: rgba(0,212,180,0.7);
     letter-spacing: 0.04em;
   }
 
   .logout-btn {
     width: 100%;
     background: transparent;
-    border: 1px solid rgba(180,145,80,0.4);
-    border-radius: 1px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
     padding: 14px 24px;
-    color: #b49150;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.2em;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
     cursor: pointer;
     transition: all 0.25s ease;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
   }
+
+  .logout-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(239,68,68,0.12), rgba(239,68,68,0.06));
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .logout-btn:hover::before { opacity: 1; }
 
   .logout-btn:hover {
-    background: rgba(180,145,80,0.08);
-    border-color: rgba(180,145,80,0.7);
-    color: #d4aa6a;
-    box-shadow: 0 4px 20px rgba(180,145,80,0.15);
+    border-color: rgba(239,68,68,0.5);
+    color: #fca5a5;
+    box-shadow: 0 4px 20px rgba(239,68,68,0.15);
   }
 
-  .logout-btn:active {
-    transform: translateY(1px);
-  }
+  .logout-btn:active { transform: scale(0.99); }
 `;
 
 function Welcome({ user, onLogout }) {
@@ -217,39 +283,49 @@ function Welcome({ user, onLogout }) {
     onLogout();
   };
 
+  const initials = user.name
+    ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    : '?';
+
   return (
     <>
       <style>{styles}</style>
       <div className="welcome-root">
-        <div className="welcome-container">
-          <div className="store-brand">MyStore</div>
+        <div className="welcome-card">
+          <div className="card-glow" />
+          <div className="card-inner">
+            <div className="brand-name">MyStore</div>
 
-          <div className="welcome-icon">👋</div>
-          <h1 className="welcome-title">Welcome Back</h1>
-          <p className="welcome-message">Hello, {user.name}! You're successfully signed in.</p>
+            <div className="avatar-ring">
+              <div className="avatar-inner">{initials}</div>
+            </div>
 
-          <div className="divider">
-            <span /><em>Your Profile</em><span />
+            <h1 className="welcome-title">Welcome back!</h1>
+            <p className="welcome-sub">You're successfully signed in, {user.name}.</p>
+
+            <div className="section-label"><span>Your Profile</span></div>
+
+            <div className="profile-card">
+              <div className="profile-row">
+                <span className="row-label">
+                  <span className="row-dot teal" />
+                  Name
+                </span>
+                <span className="row-value">{user.name}</span>
+              </div>
+              <div className="profile-row">
+                <span className="row-label">
+                  <span className="row-dot purple" />
+                  Email
+                </span>
+                <span className="row-value">{user.email}</span>
+              </div>
+            </div>
+
+            <button className="logout-btn" onClick={handleLogout}>
+              Sign Out
+            </button>
           </div>
-
-          <div className="user-info">
-            <div className="user-detail">
-              <span className="detail-label">Name</span>
-              <span className="detail-value">{user.name}</span>
-            </div>
-            <div className="user-detail">
-              <span className="detail-label">Email</span>
-              <span className="detail-value">{user.email}</span>
-            </div>
-            <div className="user-detail">
-              <span className="detail-label">Account ID</span>
-              <span className="detail-value id-value">{user.id}</span>
-            </div>
-          </div>
-
-          <button onClick={handleLogout} className="logout-btn">
-            Sign Out
-          </button>
         </div>
       </div>
     </>

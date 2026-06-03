@@ -3,158 +3,196 @@ import { login } from '../services/authService';
 import { validateEmail, validatePassword } from '../utils/validation';
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Syne:wght@400;600;700&display=swap');
 
   .auth-root {
     min-height: 100vh;
-    background: #0b0c10;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'DM Sans', sans-serif;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .auth-root::before {
-    content: '';
-    position: absolute;
-    width: 600px;
-    height: 600px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(180,145,80,0.08) 0%, transparent 70%);
-    top: -100px;
-    right: -100px;
-    pointer-events: none;
-  }
-
-  .auth-root::after {
-    content: '';
-    position: absolute;
-    width: 400px;
-    height: 400px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(180,145,80,0.05) 0%, transparent 70%);
-    bottom: -80px;
-    left: -80px;
-    pointer-events: none;
+    padding: 24px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   }
 
   .auth-card {
-    width: 420px;
-    background: #13141a;
-    border: 1px solid rgba(180,145,80,0.2);
-    border-radius: 2px;
-    padding: 52px 48px;
+    width: 100%;
+    max-width: 440px;
     position: relative;
-    box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03);
-    animation: cardFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: floatIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
-  @keyframes cardFadeIn {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
+  @keyframes floatIn {
+    from { opacity: 0; transform: translateY(32px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
   }
 
-  .auth-card::before {
+  .card-glow {
+    position: absolute;
+    inset: -1px;
+    border-radius: 24px;
+    background: linear-gradient(135deg,
+      rgba(99,57,255,0.7) 0%,
+      rgba(0,212,180,0.5) 50%,
+      rgba(255,64,140,0.6) 100%
+    );
+    padding: 1px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .card-inner {
+    background: #0a0c1e;
+    border-radius: 24px;
+    padding: 48px 44px 44px;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.06),
+      0 40px 80px rgba(0,0,0,0.6),
+      0 0 80px rgba(99,57,255,0.12),
+      inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+
+  .card-inner::before {
     content: '';
     position: absolute;
-    top: 0; left: 48px; right: 48px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(180,145,80,0.6), transparent);
+    top: -120px; right: -80px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(99,57,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
   }
 
-  .logo {
+  .card-inner::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,212,180,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .logo-wrap {
     text-align: center;
-    margin-bottom: 36px;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
   }
 
-  .logo h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2rem;
-    font-weight: 300;
-    letter-spacing: 0.3em;
-    color: #b49150;
-    text-transform: uppercase;
+  .logo-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #6339ff, #00d4b4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 32px rgba(99,57,255,0.45), 0 0 0 1px rgba(255,255,255,0.1);
+    font-size: 24px;
+  }
+
+  .logo-name {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    background: linear-gradient(135deg, #a78bfa, #34d9c3, #f472b6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin: 0 0 4px;
   }
 
-  .logo p {
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    color: rgba(255,255,255,0.3);
+  .logo-sub {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin: 0;
-    font-weight: 300;
+    font-weight: 400;
   }
 
-  .divider-line {
+  .section-label {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 32px;
+    gap: 10px;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 1;
   }
 
-  .divider-line span {
+  .section-label::before,
+  .section-label::after {
+    content: '';
     flex: 1;
     height: 1px;
-    background: rgba(255,255,255,0.08);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
   }
 
-  .divider-line em {
-    font-style: normal;
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    color: rgba(255,255,255,0.2);
+  .section-label span {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    white-space: nowrap;
   }
 
-  .form-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.5rem;
-    font-weight: 400;
-    color: #e8e0d0;
+  .form-heading {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #f0ecff;
     margin: 0 0 28px;
-    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 1;
   }
 
   .error-alert {
-    background: rgba(220, 60, 60, 0.1);
-    border: 1px solid rgba(220, 60, 60, 0.3);
-    border-left: 3px solid #dc3c3c;
-    color: #f08080;
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-left: 3px solid #ef4444;
+    color: #fca5a5;
     padding: 12px 16px;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     margin-bottom: 24px;
-    border-radius: 1px;
-    letter-spacing: 0.02em;
+    border-radius: 8px;
+    position: relative;
+    z-index: 1;
   }
 
   .form-group {
-    margin-bottom: 22px;
+    margin-bottom: 20px;
     position: relative;
+    z-index: 1;
   }
 
   .form-group label {
     display: block;
-    font-size: 0.68rem;
-    letter-spacing: 0.15em;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.4);
+    color: rgba(255,255,255,0.45);
     margin-bottom: 8px;
-    font-weight: 400;
+  }
+
+  .input-wrap {
+    position: relative;
   }
 
   .form-group input {
     width: 100%;
-    background: rgba(255,255,255,0.03);
+    background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 1px;
+    border-radius: 12px;
     padding: 13px 16px;
-    color: #e8e0d0;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 300;
+    color: #f0ecff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 0.92rem;
+    font-weight: 400;
     transition: all 0.25s ease;
     box-sizing: border-box;
     outline: none;
@@ -162,90 +200,113 @@ const styles = `
   }
 
   .form-group input::placeholder {
-    color: rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.2);
+  }
+
+  .form-group input:hover {
+    border-color: rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.07);
   }
 
   .form-group input:focus {
-    border-color: rgba(180,145,80,0.5);
-    background: rgba(180,145,80,0.04);
-    box-shadow: 0 0 0 3px rgba(180,145,80,0.08);
+    border-color: rgba(99,57,255,0.7);
+    background: rgba(99,57,255,0.06);
+    box-shadow:
+      0 0 0 3px rgba(99,57,255,0.15),
+      0 0 20px rgba(99,57,255,0.1);
   }
 
-  .form-group input.error {
-    border-color: rgba(220,60,60,0.5);
-    background: rgba(220,60,60,0.04);
+  .form-group input.input-error {
+    border-color: rgba(239,68,68,0.6);
+    background: rgba(239,68,68,0.05);
   }
 
-  .error-message {
+  .error-msg {
     display: block;
-    font-size: 0.72rem;
-    color: #f08080;
+    font-size: 0.74rem;
+    color: #fca5a5;
     margin-top: 6px;
-    letter-spacing: 0.02em;
+    padding-left: 2px;
   }
 
-  .btn {
+  .submit-btn {
     width: 100%;
-    background: linear-gradient(135deg, #b49150 0%, #d4aa6a 50%, #b49150 100%);
-    background-size: 200% 200%;
+    position: relative;
+    margin-top: 10px;
     border: none;
-    border-radius: 1px;
-    padding: 15px 24px;
-    color: #0b0c10;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.2em;
+    border-radius: 12px;
+    padding: 14px 24px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     cursor: pointer;
-    margin-top: 8px;
-    transition: all 0.3s ease;
-    position: relative;
     overflow: hidden;
+    transition: all 0.3s ease;
+    z-index: 1;
+    background: linear-gradient(135deg, #6339ff 0%, #4f8bff 50%, #00d4b4 100%);
+    color: #fff;
+    box-shadow:
+      0 4px 24px rgba(99,57,255,0.5),
+      0 1px 0 rgba(255,255,255,0.15) inset;
   }
 
-  .btn:hover:not(:disabled) {
-    background-position: right center;
-    box-shadow: 0 8px 32px rgba(180,145,80,0.3);
-    transform: translateY(-1px);
+  .submit-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
   }
 
-  .btn:active:not(:disabled) {
+  .submit-btn:hover:not(:disabled)::before {
+    opacity: 1;
+  }
+
+  .submit-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow:
+      0 8px 40px rgba(99,57,255,0.6),
+      0 1px 0 rgba(255,255,255,0.15) inset;
+  }
+
+  .submit-btn:active:not(:disabled) {
     transform: translateY(0);
+    box-shadow: 0 2px 12px rgba(99,57,255,0.4);
   }
 
-  .btn:disabled {
-    opacity: 0.5;
+  .submit-btn:disabled {
+    opacity: 0.45;
     cursor: not-allowed;
     transform: none;
   }
 
   .switch-auth {
     text-align: center;
-    margin-top: 28px;
-    font-size: 0.78rem;
-    color: rgba(255,255,255,0.3);
-    letter-spacing: 0.02em;
+    margin-top: 26px;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.35);
+    position: relative;
+    z-index: 1;
   }
 
   .switch-auth button {
     background: none;
     border: none;
-    color: #b49150;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #a78bfa;
     cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
+    margin-left: 5px;
     padding: 0;
-    margin-left: 6px;
-    text-decoration: underline;
-    text-decoration-color: rgba(180,145,80,0.4);
-    text-underline-offset: 3px;
     transition: color 0.2s;
-    letter-spacing: 0.02em;
   }
 
   .switch-auth button:hover {
-    color: #d4aa6a;
+    color: #c4b5fd;
   }
 `;
 
@@ -292,50 +353,56 @@ function Login({ onLoginSuccess, onSwitchToRegister }) {
       <style>{styles}</style>
       <div className="auth-root">
         <div className="auth-card">
-          <div className="logo">
-            <h1>MyStore</h1>
-            <p>Your trusted e-commerce platform</p>
-          </div>
-
-          <div className="divider-line">
-            <span /><em>Sign In</em><span />
-          </div>
-
-          <h2 className="form-title">Welcome Back</h2>
-
-          {apiError && <div className="error-alert">{apiError}</div>}
-
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="email">Email Address</label>
-              <input
-                type="email" id="email" name="email"
-                value={formData.email} onChange={handleChange}
-                className={errors.email ? 'error' : ''}
-                placeholder="Enter your email"
-              />
-              {errors.email && <span className="error-message">{errors.email}</span>}
+          <div className="card-glow" />
+          <div className="card-inner">
+            <div className="logo-wrap">
+              <div className="logo-icon">🛍️</div>
+              <div className="logo-name">MyStore</div>
+              <div className="logo-sub">Your trusted e-commerce platform</div>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password" id="password" name="password"
-                value={formData.password} onChange={handleChange}
-                className={errors.password ? 'error' : ''}
-                placeholder="Enter your password"
-              />
-              {errors.password && <span className="error-message">{errors.password}</span>}
+            <div className="section-label"><span>Sign In</span></div>
+
+            <h2 className="form-heading">Welcome back</h2>
+
+            {apiError && <div className="error-alert">{apiError}</div>}
+
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label htmlFor="email">Email Address</label>
+                <div className="input-wrap">
+                  <input
+                    type="email" id="email" name="email"
+                    value={formData.email} onChange={handleChange}
+                    className={errors.email ? 'input-error' : ''}
+                    placeholder="you@example.com"
+                  />
+                </div>
+                {errors.email && <span className="error-msg">{errors.email}</span>}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <div className="input-wrap">
+                  <input
+                    type="password" id="password" name="password"
+                    value={formData.password} onChange={handleChange}
+                    className={errors.password ? 'input-error' : ''}
+                    placeholder="Enter your password"
+                  />
+                </div>
+                {errors.password && <span className="error-msg">{errors.password}</span>}
+              </div>
+
+              <button type="submit" className="submit-btn" disabled={loading}>
+                {loading ? 'Signing in…' : 'Sign In'}
+              </button>
+            </form>
+
+            <div className="switch-auth">
+              Don't have an account?
+              <button onClick={onSwitchToRegister}>Create one</button>
             </div>
-
-            <button type="submit" className="btn" disabled={loading}>
-              {loading ? 'Signing in…' : 'Sign In'}
-            </button>
-          </form>
-
-          <div className="switch-auth">
-            Don't have an account?
-            <button onClick={onSwitchToRegister}>Register here</button>
           </div>
         </div>
       </div>
