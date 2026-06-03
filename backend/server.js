@@ -9,30 +9,17 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
-// ✅ FIX 1: CORS for production + local
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:5173',
-  'https://ecommerce-task-cedcoss.vercel.app'
-];
-
+// Middleware
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // allow Postman / server-to-server
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      return callback(new Error('Not allowed by CORS'));
-    },
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'https://ecommerce-task-cedcoss.vercel.app'
+    ],
     credentials: true
   })
 );
-
-// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -60,10 +47,9 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ✅ FIX 2: Render requires 0.0.0.0 binding sometimes
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
   console.log(`📍 API URL: http://localhost:${PORT}`);
 });
